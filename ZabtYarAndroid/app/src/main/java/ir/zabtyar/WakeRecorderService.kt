@@ -271,7 +271,7 @@ class WakeRecorderService : Service() {
         }
 
         return builder
-            .setContentTitle("آوا (ضبط‌یار)")
+            .setContentTitle("آوا (AVA)")
             .setContentText(message)
             .setSmallIcon(android.R.drawable.ic_btn_speak_now)
             .setOngoing(true)
