@@ -186,13 +186,13 @@ class WakeRecorderService : Service() {
             .trim()
 
         when {
-            normalized.contains("ضبط‌یار") &&
+            normalized.contains("آوا") &&
                 normalized.contains("شروع کن") -> {
                 active.set(true)
                 updateNotification("فرمان شروع دریافت شد.")
             }
 
-            normalized.contains("ضبط‌یار") &&
+            normalized.contains("آوا") &&
                 normalized.contains("توقف") -> {
                 active.set(false)
                 updateNotification("فرمان توقف دریافت شد؛ آماده‌باش ادامه دارد.")
