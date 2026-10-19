@@ -1,11 +1,11 @@
-```yaml
+
 name: Build Ava APK
 
 on:
   workflow_dispatch:
   push:
-    branches: [master]
-  workflow_call:
+    branches:
+      - master
 
 permissions:
   contents: read
@@ -13,53 +13,49 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout project
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
+      - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Set up Gradle
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
 
-      - name: Find and build Android project
+      - name: Build APK
         shell: bash
         run: |
           PROJECT_DIR=""
           while IFS= read -r file; do
-            if [ -f "$(dirname "$file")/app/build.gradle.kts" ] || [ -f "$(dirname "$file")/app/build.gradle" ]; then
-              PROJECT_DIR="$(dirname "$file")"
+            dir="$(dirname "$file")"
+            if [ -f "$dir/app/build.gradle.kts" ] || [ -f "$dir/app/build.gradle" ]; then
+              PROJECT_DIR="$dir"
               break
             fi
           done < <(find . -name settings.gradle.kts -not -path '*/.gradle/*')
 
           if [ -z "$PROJECT_DIR" ]; then
-            echo "Could not find the Android project root."
-            find . -maxdepth 4 -type f | head -200
+            echo "Android project root not found"
+            find . -maxdepth 5 -type f | head -200
             exit 1
           fi
 
-          echo "Building project at: $PROJECT_DIR"
-          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
-
+          echo "Project directory: $PROJECT_DIR"
           gradle -p "$PROJECT_DIR" assembleDebug
 
       - name: Upload APK
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: Ava-debug-apk
           path: '**/build/outputs/apk/debug/*.apk'
           if-no-files-found: error
           retention-days: 7
-```
