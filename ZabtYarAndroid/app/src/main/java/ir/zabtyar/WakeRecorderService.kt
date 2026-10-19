@@ -154,7 +154,7 @@ class WakeRecorderService : Service() {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Offline listening failed", e)
-            updateNotification("خطا در شنود: ${e.localizedMessage ?: "نامشخص"}")
+            updateNotification("خطای آوا: ${e.localizedMessage ?: "نامشخص"}")
         } finally {
             running.set(false)
 
